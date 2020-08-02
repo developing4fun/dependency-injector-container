@@ -45,3 +45,27 @@ Once project is downloaded, we will execute:
 
 For more actions, execute `make` without arguments.
 
+# TODO:
+- [X] No troba ID ni autowire (ara espera excepcio per no trobar la ID, i hauria de ser per no trobar la class)
+- [X] Sense autowire, ni parametres
+- [X] Sense autowire, amb parametre normal
+- [X] Sense autowire, amb la class key faltant
+- [X] Ssense autowire, amb referencia circular
+- [X] Sense autowire, no troba parametres
+- [X] Sense autowire, amb parametre a altra dependencia
+- [X] Amb autowire, amb parametre normal
+- [ ] Amb autowire, amb parametre a altra dependencia sense autowire
+
+-------
+
+- [x] dependencia conocida sin constructor -> fallo -> no falla, sempre hi ha constructor per defecte, vol dir que no te parametres
+- [ ] dependencia conocida con constuector -> amb parametres i sense
+    - [ ] parametro desconocid -> autow
+    - [ ] parametro desconocido no existente -> autowire falla
+    - [x] parametro conocido
+
+- [ ] dependencia desconocida sin consturctor -> falla -> no deberia
+- [ ] dependencia desconocida con constructor -> puede tener parametros o no
+    - [ ] parametro concocido -> deberia cargarlo
+    - [ ] parametro desconocido -> deberia usar autowire
+    - [ ] parametro desconocido no existente -> autowire falla
