@@ -50,10 +50,10 @@ class Container implements ContainerInterface
 
     public function has($id)
     {
-        return !isset($this->dependencies[$id]) ? $this->autoWired($id) : true;
+        return !isset($this->dependencies[$id]) ? $this->canAutoWire($id) : true;
     }
 
-    private function autoWired(string $id): bool
+    private function canAutoWire(string $id): bool
     {
         try{
             $this->autoWire($id);
@@ -71,13 +71,19 @@ class Container implements ContainerInterface
     private function autoWire(string $id): void
     {
         $reflected = new ReflectionClass($id);
+        $this->dependencyStore[$id] = $reflected->newInstanceArgs($this->getAutoWiredDependencies($reflected));
+    }
 
+    /**
+     * @throws DependencyNotFoundException
+     */
+    private function getAutoWiredDependencies(ReflectionClass $reflected): array
+    {
         $dependencies = [];
         $constructor = $reflected->getConstructor();
 
         if ($constructor === null) {
-            $this->dependencyStore[$id] = $reflected->newInstanceArgs($dependencies);
-            return;
+            return $dependencies;
         }
 
         $parameters = $constructor->getParameters();
@@ -90,7 +96,7 @@ class Container implements ContainerInterface
             $dependencies[] = $this->get($parameter->getClass()->getName());
         }
 
-        $this->dependencyStore[$id] = $reflected->newInstanceArgs($dependencies);
+        return $dependencies;
     }
 
     private function createDependency(string $name)
