@@ -1,6 +1,6 @@
 {
-  "name": "developing4fun/app-skeleton",
-  "description": "Basic skeleton for incoming projects. This skeleton provides a basic folder structure and a simple Docker environment.",
+  "name": "developing4fun/dependency-injector-container",
+  "description": "A simple DI container using PSR-11 for educational purposes",
   "type": "project",
   "authors": [
     {
@@ -22,5 +22,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^8.5"
+  },
+  "require": {
+    "psr/container": "^1.0"
   }
 }

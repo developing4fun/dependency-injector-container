@@ -1,3 +1,6 @@
+# Dependency injector container
+Dependency injector container for educational purposes using the standard PSR-11: https://www.php-fig.org/psr/psr-11/
+
 # Installation
 
 Execute `make build` to download Docker container and install all composer dependencies.
