@@ -1,0 +1,26 @@
+{
+  "name": "developing4fun/app-skeleton",
+  "description": "Basic skeleton for incoming projects. This skeleton provides a basic folder structure and a simple Docker environment.",
+  "type": "project",
+  "authors": [
+    {
+      "name": "raseal "
+    },
+    {
+      "name":"thefoovault"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Dev4Fun\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Test\\": "test"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5"
+  }
+}
