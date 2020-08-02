@@ -30,6 +30,11 @@ class Container implements ContainerInterface
         $this->dependencyStore = [];
     }
 
+    /**
+     * @throws ContainerException
+     * @throws DependencyNotFoundException
+     * @throws ReflectionException
+     */
     public function get($id)
     {
         $this->assertDependencyExists($id);
@@ -41,6 +46,9 @@ class Container implements ContainerInterface
         return $this->dependencyStore[$id];
     }
 
+    /**
+     * @throws DependencyNotFoundException
+     */
     private function assertDependencyExists(string $id): void
     {
         if (!$this->has($id)) {
@@ -48,11 +56,17 @@ class Container implements ContainerInterface
         }
     }
 
+    /**
+     * @throws ContainerException
+     */
     public function has($id)
     {
         return !isset($this->dependencies[$id]) ? $this->canAutoWire($id) : true;
     }
 
+    /**
+     * @throws ContainerException
+     */
     private function canAutoWire(string $id): bool
     {
         try{
@@ -99,6 +113,10 @@ class Container implements ContainerInterface
         return $dependencies;
     }
 
+    /**
+     * @throws ContainerException
+     * @throws ReflectionException
+     */
     private function createDependency(string $name)
     {
         $requested_class = $this->dependencies[$name];
@@ -114,6 +132,9 @@ class Container implements ContainerInterface
         return $reflected_class->newInstanceArgs($arguments);
     }
 
+    /**
+     * @throws ContainerException
+     */
     private function assertClassKeyExists(
         string $name,
         $requested_class
@@ -123,6 +144,9 @@ class Container implements ContainerInterface
         }
     }
 
+    /**
+     * @throws ContainerException
+     */
     private function assertClassExists(
         string $name,
         $requested_class
@@ -132,6 +156,9 @@ class Container implements ContainerInterface
         }
     }
 
+    /**
+     * @throws ContainerException
+     */
     private function assertUnlockedDependency(
         string $name,
         $requested_class
@@ -141,6 +168,9 @@ class Container implements ContainerInterface
         }
     }
 
+    /**
+     * @throws ParameterNotFoundException
+     */
     private function resolveArguments(array $argument_definitions)
     {
         $arguments = [];
@@ -164,6 +194,9 @@ class Container implements ContainerInterface
         return $arguments;
     }
 
+    /**
+     * @throws ParameterNotFoundException
+     */
     private function getParameter(string $name): string
     {
         $keys = explode('.', $name);
