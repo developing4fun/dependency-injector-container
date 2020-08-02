@@ -49,7 +49,46 @@ class Container implements ContainerInterface
 
     public function has($id)
     {
-        return isset($this->dependencies[$id]);
+        return !isset($this->dependencies[$id]) ? $this->autoWired($id) : true;
+    }
+
+    private function autoWired(string $id): bool
+    {
+        try{
+            $this->autoWire($id);
+
+            return true;
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    private function autoWire(string $id): void
+    {
+        $reflected = new ReflectionClass($id);
+
+        $dependencies = [];
+        $constructor = $reflected->getConstructor();
+
+        if ($constructor === null) {
+            $this->dependencyStore[$id] = $reflected->newInstanceArgs($dependencies);
+            return;
+        }
+
+        $parameters = $constructor->getParameters();
+
+        foreach($parameters as $parameter) {
+            if ($parameter->getClass() === null) {
+                throw ContainerException::forMissingDependencyClass($parameter->getName());
+            }
+
+            $dependencies[] = $this->get($parameter->getClass()->getName());
+        }
+
+        $this->dependencyStore[$id] = $reflected->newInstanceArgs($dependencies);
     }
 
     private function createDependency(string $name)
@@ -63,9 +102,8 @@ class Container implements ContainerInterface
         $this->dependencies[$name]['lock'] = true;
         $arguments = isset($requested_class['arguments']) ? $this->resolveArguments($requested_class['arguments']): [];
         $reflected_class = new ReflectionClass($requested_class['class']);
-        $dependency = $reflected_class->newInstanceArgs($arguments);
 
-        return $dependency;
+        return $reflected_class->newInstanceArgs($arguments);
     }
 
     private function assertClassKeyExists(
@@ -128,7 +166,7 @@ class Container implements ContainerInterface
             $context = $context[$key];
         }
 
-        return $context;
+        return (string) $context;
     }
 
     private function assertParameterExists(
