@@ -11,6 +11,7 @@ use Dev4Fun\Exceptions\ParameterNotFoundException;
 use Dev4Fun\Reference\DependencyReference;
 use Dev4Fun\Reference\ParameterReference;
 use PHPUnit\Framework\TestCase;
+use Test\dependencies\FakeDependencyAutoWired;
 use Test\dependencies\FakeDependencyWithoutParams;
 use Test\dependencies\FakeDependencyWithParams;
 
@@ -110,5 +111,13 @@ class ContainerTest extends TestCase
         $this->expectException(ParameterNotFoundException::class);
         $this->expectExceptionMessage('Could not find parameter called "inexistent"');
         $this->container->get('failed.parameter-not-found');
+    }
+
+    public function testShouldGetDependencyWithAutoWire(): void
+    {
+        /** @var FakeDependencyAutoWired $service */
+        $service = $this->container->get(FakeDependencyAutoWired::class);
+        $this->assertInstanceOf(FakeDependencyAutoWired::class, $service);
+        $this->assertInstanceOf(FakeDependencyWithoutParams::class, $service->dependencyWithoutParams());
     }
 }
