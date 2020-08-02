@@ -120,4 +120,11 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(FakeDependencyAutoWired::class, $service);
         $this->assertInstanceOf(FakeDependencyWithoutParams::class, $service->dependencyWithoutParams());
     }
+
+    public function testThrowsExceptionWhenCannotAutoWire(): void
+    {
+        $this->expectException(DependencyNotFoundException::class);
+        $this->expectExceptionMessage('Could not find dependency with ID "a_fake_value"');
+        $this->container->get(FakeDependencyWithParams::class);
+    }
 }

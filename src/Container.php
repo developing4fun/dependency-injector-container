@@ -11,6 +11,7 @@ use Dev4Fun\Reference\DependencyReference;
 use Dev4Fun\Reference\ParameterReference;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
+use ReflectionException;
 use function class_exists;
 use function is_array;
 
@@ -58,13 +59,14 @@ class Container implements ContainerInterface
             $this->autoWire($id);
 
             return true;
-        } catch (\Throwable $e) {
+        } catch (ReflectionException $e) {
             return false;
         }
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ContainerException
+     * @throws ReflectionException
      */
     private function autoWire(string $id): void
     {
@@ -82,7 +84,7 @@ class Container implements ContainerInterface
 
         foreach($parameters as $parameter) {
             if ($parameter->getClass() === null) {
-                throw ContainerException::forMissingDependencyClass($parameter->getName());
+                throw DependencyNotFoundException::forId($parameter->getName());
             }
 
             $dependencies[] = $this->get($parameter->getClass()->getName());
